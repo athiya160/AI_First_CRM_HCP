@@ -1,0 +1,40 @@
+.kpi-card {
+  gap: 8px;
+}
+
+.kpi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kpi-header h3 {
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.kpi-icon {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.kpi-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.highlight-kpi {
+  background: linear-gradient(145deg, rgba(59, 130, 246, 0.1), transparent);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.highlight-kpi .kpi-value {
+  color: var(--primary-hover);
+}
+
+.highlight-kpi .kpi-icon {
+  color: var(--primary);
+  opacity: 1;
+}

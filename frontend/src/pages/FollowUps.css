@@ -1,0 +1,106 @@
+.follow-ups-page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  height: 100%;
+}
+
+.kanban-board {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  flex: 1;
+  min-height: 0;
+}
+
+@media (max-width: 900px) {
+  .kanban-board {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kanban-column {
+  display: flex;
+  flex-direction: column;
+  background: rgba(17, 24, 39, 0.3);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  padding: 24px;
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.column-header h2 {
+  font-size: 1.1rem;
+}
+
+.task-list-full {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.task-card {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+}
+
+.task-card.pending {
+  border-left: 3px solid var(--warning);
+}
+
+.task-card.completed {
+  opacity: 0.6;
+  border-left: 3px solid var(--success);
+}
+
+.task-card.completed h4 {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.task-check {
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 2px;
+}
+
+.task-check:hover {
+  color: var(--primary-hover);
+  transform: scale(1.1);
+}
+
+.task-check.checked {
+  color: var(--success);
+}
+
+.task-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.task-details h4 {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.hcp-name {
+  font-size: 0.85rem;
+  color: var(--primary-hover);
+}
+
+.due-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}

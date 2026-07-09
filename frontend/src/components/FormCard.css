@@ -1,0 +1,19 @@
+.form-card {
+  gap: 24px;
+}
+
+.form-card-header h2 {
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+
+.form-card-header p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.form-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}

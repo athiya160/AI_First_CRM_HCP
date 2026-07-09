@@ -1,0 +1,36 @@
+.doctor-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  transition: var(--transition);
+}
+
+.doctor-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+.doc-info-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.doc-avatar {
+  color: var(--text-muted);
+}
+
+.doc-details h4 {
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+.doc-details p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}

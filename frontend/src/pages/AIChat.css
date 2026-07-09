@@ -1,0 +1,91 @@
+.ai-chat-page {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.chat-container {
+  width: 100%;
+  max-width: 900px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.chat-header-full {
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(17, 24, 39, 0.4);
+}
+
+.glow-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--primary);
+  background: rgba(59, 130, 246, 0.1);
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.chat-stream {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.full-suggestions {
+  padding: 0 32px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.chat-input-wrapper {
+  margin: 24px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 99px;
+  padding: 8px 8px 8px 24px;
+  box-shadow: var(--shadow-lg);
+}
+
+.chat-input-wrapper input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.chat-input-wrapper input:focus {
+  outline: none;
+}
+
+.chat-input-wrapper button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.chat-input-wrapper button:hover {
+  background: var(--primary-hover);
+}
