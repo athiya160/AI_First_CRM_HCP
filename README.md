@@ -7,96 +7,77 @@ The application combines React, FastAPI, PostgreSQL, LangGraph, and Groq LLM to 
 
 ---
 
-## System Architecture
+## Architecture
+
+Our application is built on a modern, decoupled architecture:
+- **Frontend:** React + Redux (Vite)
+- **Backend:** FastAPI (Python)
+- **AI Agent:** LangGraph + Groq LLM
+- **Database:** PostgreSQL (SQLAlchemy ORM)
+
+---
+
+## Workflow Diagram
 
 ```text
-Frontend (React + Redux)
-        │
-        │ Axios API Calls
-        ▼
-Backend (FastAPI)
-        │
-        ▼
+React (Frontend)
+      ↓
+Axios (API Client)
+      ↓
+FastAPI (Backend)
+      ↓
 LangGraph Agent
-        │
-        ├── Log Interaction
-        ├── Edit Interaction
-        ├── Search Interaction
-        ├── Summarize Interaction
-        └── Schedule Follow-up
-        │
-        ▼
+      ↓
+Groq LLM
+      ↓
+Tool Execution
+      ↓
 PostgreSQL Database
+      ↓
+React (State Update)
 ```
 
 ---
 
-## Features
-- **Dashboard** with live HCP statistics and dynamic KPI cards.
-- **Doctor Directory** with instantaneous search and specialty filtering.
-- **Log Interaction Form** for traditional structured data entry.
-- **AI Copilot Chat** for conversational data logging and retrieval.
-- **AI Generated Summary** from raw meeting notes.
-- **Medical Entity Extraction** (topics, conditions, medications).
-- **Sentiment Analysis** for relationship management.
-- **Follow-up Management** to auto-schedule pending tasks.
-- **Interaction History** timeline with robust filters.
-- **PostgreSQL Persistence** for robust data integrity.
-- **LangGraph Tool Calling** linking natural language to CRUD operations.
+## LangGraph Flow
 
----
-
-## Project Structure
-
-```text
-backend/
-│
-├── app/
-│   ├── api/          # FastAPI Routers
-│   ├── services/     # AI Agent & LangGraph logic
-│   ├── models/       # SQLAlchemy Database Models
-│   ├── crud/         # Database operations
-│   ├── db/           # Connection configurations
-│   └── main.py       # FastAPI Entrypoint
-│
-frontend/
-│
-├── src/
-│   ├── components/   # Reusable UI widgets
-│   ├── pages/        # Route views (Dashboard, History, etc.)
-│   ├── features/     # Redux slices
-│   └── App.jsx       # React Entrypoint
-```
-
----
-
-## The LangGraph AI Agent & Workflow
-
-### AI Workflow
-```text
-User Message
-      ↓
-FastAPI Endpoint
-      ↓
-LangGraph Agent
-      ↓
-Tool Selection
-      ↓
-LLM Structured Output (JSON)
-      ↓
-Database Operation (SQLAlchemy)
-      ↓
-Response Returned to React UI
-```
-
-### Agent Tools (The 5 Core Tools)
 The LangGraph agent acts as an autonomous administrative assistant. It is equipped with five distinct Python tools mapped directly to PostgreSQL database operations:
 
-1. **Log Interaction (Mandatory):** Captures interaction data from conversational notes. The LLM extracts the doctor's name, determines the sentiment, extracts medical entities, formulates a summary, and deduces action items before persisting to the DB.
-2. **Edit Interaction (Mandatory):** Allows modification of previously logged data. The LLM re-evaluates the summary, sentiment, and entities based on updated context, and overwrites the DB record.
+1. **Log Interaction:** Captures interaction data from conversational notes. The LLM extracts the doctor's name, determines the sentiment, extracts medical entities, formulates a summary, and deduces action items before persisting to the DB.
+2. **Edit Interaction:** Allows modification of previously logged data. The LLM re-evaluates the summary, sentiment, and entities based on updated context, and overwrites the DB record.
 3. **Search Interaction:** A semantic retrieval tool. The rep can ask to "show meetings with Dr. Chen," translating natural language into a filtered SQL query.
 4. **Summarize Interaction:** An analytical tool that retrieves the last N interactions for a doctor and synthesizes bullet points and an overall relationship sentiment score.
 5. **Schedule Follow-up:** Extracts dates and tasks from the chat to create pending reminders linked to specific doctors.
+
+---
+
+## Folder Structure
+
+```text
+AI_First_CRM_HCP/
+│
+├── backend/
+│   ├── app/
+│   │   ├── api/          # FastAPI Routers (Endpoints)
+│   │   ├── services/     # AI Agent & LangGraph logic
+│   │   ├── models/       # SQLAlchemy Database Models
+│   │   ├── schemas/      # Pydantic validation schemas
+│   │   ├── crud/         # Database CRUD operations
+│   │   ├── db/           # Connection configurations
+│   │   └── main.py       # FastAPI Entrypoint
+│   └── .env              # Backend Environment Variables
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/   # Reusable UI widgets
+│   │   ├── pages/        # Route views (Dashboard, LogInteraction, etc.)
+│   │   ├── features/     # Redux slices (State management)
+│   │   ├── api/          # Axios configurations
+│   │   └── App.jsx       # React Entrypoint
+│   └── package.json      # Frontend dependencies
+│
+└── README.md
+```
 
 ---
 
@@ -123,15 +104,35 @@ The LangGraph agent acts as an autonomous administrative assistant. It is equipp
 
 ---
 
-## LLM Selection
+## Features & Screenshots
 
-The original assignment requested the use of `gemma2-9b-it`. However, during implementation, Groq officially deprecated and removed this model from their API. 
+### 1. Interactive Dashboard
+Provides a high-level overview of key metrics, pending follow-ups, and AI-generated insights. The dashboard dynamically updates greetings based on your local time and features smart Copilot suggestions for immediate action.
 
-To maintain compatibility while satisfying the strict assignment requirements (specifically the need for reliable structured JSON output), this project uses: **`llama-3.3-70b-versatile`**. This model provides elite structured output support and integrates flawlessly with LangGraph tool-calling functionality.
+*(Save your Dashboard screenshot as `dashboard.png` in a `screenshots` folder and uncomment the line below)*
+<!-- ![Dashboard](./screenshots/dashboard.png) -->
+
+### 2. Log Interaction (Structured Form)
+A clean, intuitive form allowing field representatives to manually log meeting details, select a Healthcare Professional, and record notes.
+
+*(Save your Structured Form screenshot as `log_interaction.png` in a `screenshots` folder and uncomment the line below)*
+<!-- ![Log Interaction Form](./screenshots/log_interaction.png) -->
+
+### 3. AI CRM Copilot (Chat Interface)
+An integrated LangGraph-powered chat assistant that slides out to help users log interactions, summarize past meetings, search history, and schedule follow-ups using natural language.
+
+*(Save your Copilot Chat screenshot as `copilot_chat.png` in a `screenshots` folder and uncomment the line below)*
+<!-- ![AI Copilot](./screenshots/copilot_chat.png) -->
+
+### 4. Interaction History
+A comprehensive timeline view of all past engagements. Users can filter by doctor or meeting type and review AI-analyzed summaries for every logged interaction.
+
+*(Save your History screenshot as `history.png` in a `screenshots` folder and uncomment the line below)*
+<!-- ![Interaction History](./screenshots/history.png) -->
 
 ---
 
-## Project Setup & Installation
+## Installation
 
 ### Prerequisites
 - Node.js (v18+)
@@ -149,24 +150,12 @@ Navigate to the `backend` directory:
 ```bash
 cd backend
 python -m venv venv
-source venv/Scripts/activate  # On Windows
+venv\Scripts\activate  # On Windows
 pip install -r requirements.txt
 ```
 
-Create a `.env` file (do NOT commit this to GitHub):
-```env
-DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/hcp_crm
-GROQ_API_KEY=your_groq_api_key_here
-```
-
-Seed the database with mock data and start the server:
-```bash
-python seed.py
-uvicorn app.main:app --reload
-```
-
 ### 3. Frontend Setup
-Navigate to the `frontend` directory:
+Open a new terminal and navigate to the `frontend` directory:
 ```bash
 cd frontend
 npm install
@@ -175,23 +164,32 @@ npm run dev
 
 ---
 
-## Screenshots
-*(Upload your screenshots to your GitHub repository and place the links here before submitting!)*
-- [Dashboard]()
-- [Log Interaction]()
-- [History]()
-- [Follow-ups]()
-- [AI Copilot]()
+## Environment Variables
+
+Create a `.env` file in the `backend` directory with the following variables:
+
+```env
+# PostgreSQL Database URL
+DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/hcp_crm
+
+# Groq API Key for LangGraph Agent
+GROQ_API_KEY=your_groq_api_key_here
+
+# Optional Configurations
+APP_ENV=development
+```
+
+*(Do not commit this file to GitHub!)*
 
 ---
 
-## Future Improvements
-- JWT Authentication
-- Role-Based Access
-- Docker Deployment
-- Notification System
-- Calendar & Email Integration
-- Analytics Dashboard
+## Future Scope
+
+- JWT Authentication for secure representative login.
+- Role-Based Access Control (Admin vs. Field Rep).
+- Docker Deployment (Dockerize frontend and backend).
+- Email integration to automatically send the generated follow-ups.
+- Advanced Analytics Dashboard.
 
 ---
 

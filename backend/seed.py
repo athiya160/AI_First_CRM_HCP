@@ -1,5 +1,6 @@
 import os
 import sys
+import random
 from datetime import datetime, timedelta
 
 # Add the backend directory to sys.path so we can import 'app'
@@ -10,7 +11,7 @@ from app.models.hcp import HCP
 from app.models.interaction import Interaction
 from app.models.follow_up import FollowUp
 
-def seed_db():
+def generate_realistic_seed():
     print("Connecting to database...")
     db = SessionLocal()
     
@@ -22,81 +23,121 @@ def seed_db():
         db.query(FollowUp).delete()
         db.query(Interaction).delete()
         db.query(HCP).delete()
-        
-        print("Seeding Doctors (HCPs)...")
-        doctors = [
-            HCP(name="Dr. Sarah Johnson", email="sarah.j@example.com", specialty="Endocrinology"),
-            HCP(name="Dr. Michael Chen", email="m.chen@example.com", specialty="Cardiology"),
-            HCP(name="Dr. Emily Davis", email="emily.davis@example.com", specialty="Primary Care"),
-            HCP(name="Dr. Robert Wilson", email="r.wilson@example.com", specialty="Neurology"),
-        ]
-        db.add_all(doctors)
         db.commit()
         
-        # Refresh to get IDs
+        print("Seeding 12 Doctors (HCPs)...")
+        doctors_data = [
+            ("Dr. Sarah Johnson", "Endocrinology"),
+            ("Dr. Marcus Chen", "Neurology"),
+            ("Dr. Emily Davis", "Primary Care"),
+            ("Dr. Robert Wilson", "Cardiology"),
+            ("Dr. Lisa Patel", "Oncology"),
+            ("Dr. James Rodriguez", "Orthopedics"),
+            ("Dr. Amanda Smith", "Pediatrics"),
+            ("Dr. William Taylor", "Psychiatry"),
+            ("Dr. Olivia Martinez", "Dermatology"),
+            ("Dr. David Anderson", "Gastroenterology"),
+            ("Dr. Sophia Kim", "Rheumatology"),
+            ("Dr. Thomas Wright", "Pulmonology")
+        ]
+        
+        doctors = []
+        for name, spec in doctors_data:
+            doc = HCP(name=name, email=f"{name.lower().replace(' ', '.').replace('dr.', '')}@hospital.com", specialty=spec)
+            doctors.append(doc)
+        
+        db.add_all(doctors)
+        db.commit()
         for d in doctors:
             db.refresh(d)
             
-        print("Seeding Interactions...")
+        print("Seeding 48 Interactions...")
         now = datetime.now()
         
-        interactions = [
-            Interaction(
-                hcp_id=doctors[0].id,
-                type="Meeting",
-                date=now - timedelta(days=2),
-                notes="Discussed new diabetes medicine efficacy. Dr. Sarah was very receptive and wants to start a trial with 5 patients.",
-                summary="Discussed diabetes medicine; receptive to trial."
-            ),
-            Interaction(
-                hcp_id=doctors[0].id,
-                type="Email",
-                date=now - timedelta(days=5),
-                notes="Sent clinical trial data for the new insulin pump as requested.",
-                summary="Emailed clinical trial data."
-            ),
-            Interaction(
-                hcp_id=doctors[1].id,
-                type="Call",
-                date=now - timedelta(days=1),
-                notes="Brief call regarding hypertension guidelines. He asked for more literature on our new beta-blocker.",
-                summary="Call about hypertension; requested literature."
-            ),
-            Interaction(
-                hcp_id=doctors[2].id,
-                type="Visit",
-                date=now - timedelta(days=10),
-                notes="Routine clinic visit. Dropped off samples of seasonal allergy medication. Staff was friendly.",
-                summary="Dropped off allergy samples."
-            )
+        interaction_types = ["Meeting", "Call", "Email", "Visit"]
+        sentiments = ["Positive", "Positive", "Positive", "Positive", "Neutral", "Neutral", "Negative"] # Weight heavily to Positive
+        
+        notes_templates = [
+            "Discussed the efficacy of the new {drug} trial. Doctor was very receptive and requested literature.",
+            "Quick check-in call regarding the {drug} samples delivered last week. Everything looks good.",
+            "Detailed meeting on patient outcomes using {drug}. Showed 15% improvement in markers.",
+            "Emailed the updated clinical guidelines for {drug} as requested during our last visit.",
+            "Brief visit to the clinic. Left {drug} samples with the front desk. Staff was friendly.",
+            "Addressed concerns about side effects of {drug}. Provided the latest safety profile documents.",
+            "Doctor is highly interested in participating in the phase 3 trials for {drug}.",
+            "Follow-up regarding the {drug} webinar. Doctor found it very informative."
         ]
+        
+        drugs = ["CardioMax", "NeuroSoothe", "EndoGluco", "PulmoBreath", "DermaClear", "OncoShield"]
+        
+        interactions = []
+        # We need 48 interactions. Spread them out over the last 30 days.
+        for i in range(48):
+            doc = random.choice(doctors)
+            i_type = random.choice(interaction_types)
+            sentiment = random.choice(sentiments)
+            
+            # 8 of them should be 'Today' to make the UI look active today
+            if i < 8:
+                date = now - timedelta(hours=random.randint(1, 8))
+            else:
+                date = now - timedelta(days=random.randint(1, 30), hours=random.randint(1, 23))
+                
+            drug = random.choice(drugs)
+            note = random.choice(notes_templates).format(drug=drug)
+            
+            conf = random.randint(85, 99) if sentiment == "Positive" else random.randint(70, 90)
+            
+            summary = note.split(". ")[0] + "."
+            action_items = ["Send literature"] if "requested" in note else []
+            entities = [drug, doc.specialty]
+            
+            inter = Interaction(
+                hcp_id=doc.id,
+                type=i_type,
+                date=date,
+                notes=note,
+                summary=summary,
+                sentiment=sentiment,
+                confidence=conf,
+                entities=entities,
+                action_items=action_items
+            )
+            interactions.append(inter)
+            
         db.add_all(interactions)
         
-        print("Seeding Follow-ups...")
-        follow_ups = [
-            FollowUp(
-                hcp_id=doctors[0].id,
-                date=now + timedelta(days=5),
-                description="Check in on the 5 patient trial for the diabetes medicine.",
+        print("Seeding 5 Pending Follow-ups...")
+        follow_ups = []
+        for i in range(5):
+            doc = random.choice(doctors)
+            # Mix of due today, tomorrow, and overdue
+            offset = random.choice([-1, 0, 1, 2])
+            date = now + timedelta(days=offset)
+            
+            fu = FollowUp(
+                hcp_id=doc.id,
+                date=date,
+                description=f"Send updated clinical trial data for {random.choice(drugs)}.",
                 status="pending"
-            ),
-            FollowUp(
-                hcp_id=doctors[1].id,
-                date=now + timedelta(days=1),
-                description="Send the requested beta-blocker literature.",
-                status="pending"
-            ),
-            FollowUp(
-                hcp_id=doctors[2].id,
-                date=now - timedelta(days=2),
-                description="Follow up on allergy samples.",
+            )
+            follow_ups.append(fu)
+            
+        # Add a couple completed ones
+        for i in range(2):
+            doc = random.choice(doctors)
+            fu = FollowUp(
+                hcp_id=doc.id,
+                date=now - timedelta(days=random.randint(3, 10)),
+                description="Follow up on samples dropped off.",
                 status="completed"
             )
-        ]
+            follow_ups.append(fu)
+            
         db.add_all(follow_ups)
-        
         db.commit()
-        print("Database seeded successfully!")
+        
+        print(f"Successfully seeded {len(doctors)} doctors, {len(interactions)} interactions, and {len(follow_ups)} follow-ups.")
         
     except Exception as e:
         print(f"Error seeding database: {e}")
@@ -105,4 +146,4 @@ def seed_db():
         db.close()
 
 if __name__ == "__main__":
-    seed_db()
+    generate_realistic_seed()

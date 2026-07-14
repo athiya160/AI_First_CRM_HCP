@@ -31,6 +31,8 @@ class MultiInteractionSummarySchema(BaseModel):
 @tool
 def log_interaction(doctor_name: str, type: str, date: str, notes: str) -> str:
     """Log a new interaction with a healthcare professional (HCP)."""
+    if not doctor_name or doctor_name.strip().lower() in ["", "unknown"]:
+        return json.dumps({"success": False, "error": "Please ask the user which doctor they are referring to."})
     
     # 1. Use Groq llama-3.3-70b-versatile to extract structured data from notes
     llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0, api_key=settings.GROQ_API_KEY)
@@ -42,8 +44,12 @@ def log_interaction(doctor_name: str, type: str, date: str, notes: str) -> str:
     # 2. Database operations
     db = SessionLocal()
     try:
+        # Clean up the name for a more robust search
+        clean_name = doctor_name.replace("Dr.", "").replace("Dr ", "").strip()
+        search_term = clean_name.split()[0] if clean_name else doctor_name
+        
         # Search for the doctor by name
-        stmt = select(HCP).where(HCP.name.ilike(f"%{doctor_name}%"))
+        stmt = select(HCP).where(HCP.name.ilike(f"%{search_term}%"))
         hcp = db.execute(stmt).scalars().first()
         
         # If doctor doesn't exist, create a stub for them
@@ -105,7 +111,13 @@ def edit_interaction(interaction_id: int, updated_notes: str) -> str:
         # Verify the interaction exists
         interaction = get_interaction(db, interaction_id)
         if not interaction:
-            return json.dumps({"success": False, "error": f"Interaction {interaction_id} not found."})
+            # Get the 3 most recent interactions so the AI can suggest them
+            recent = db.execute(select(Interaction).order_by(Interaction.date.desc()).limit(3)).scalars().all()
+            recent_text = "\n".join([f"ID {r.id}: {r.type} on {r.date} with {r.hcp.name if r.hcp else 'Unknown'}" for r in recent])
+            return json.dumps({
+                "success": False, 
+                "error": f"I couldn't find Interaction #{interaction_id}. Here are the most recent ones. Ask the user which one they want to edit:\n{recent_text}"
+            })
             
         # 3. Update the interaction using the existing CRUD layer
         updated_data = {
@@ -141,7 +153,9 @@ def search_interaction(doctor_name: Optional[str] = None, interaction_type: Opti
         stmt = select(Interaction).join(Interaction.hcp)
         
         if doctor_name:
-            stmt = stmt.where(HCP.name.ilike(f"%{doctor_name}%"))
+            clean_name = doctor_name.replace("Dr.", "").replace("Dr ", "").strip()
+            search_term = clean_name.split()[0] if clean_name else doctor_name
+            stmt = stmt.where(HCP.name.ilike(f"%{search_term}%"))
         if interaction_type:
             stmt = stmt.where(Interaction.type.ilike(f"%{interaction_type}%"))
         if date:
@@ -178,9 +192,13 @@ def summarize_interaction(doctor_name: str, limit: Union[int, str] = 10) -> str:
     db = SessionLocal()
     try:
         limit_val = int(limit) if limit else 10
+        
+        clean_name = doctor_name.replace("Dr.", "").replace("Dr ", "").strip()
+        search_term = clean_name.split()[0] if clean_name else doctor_name
+        
         # Fetch the last N interactions for the doctor, ordered by date descending
         stmt = select(Interaction).join(Interaction.hcp).where(
-            HCP.name.ilike(f"%{doctor_name}%")
+            HCP.name.ilike(f"%{search_term}%")
         ).order_by(Interaction.date.desc()).limit(limit_val)
         
         interactions = db.execute(stmt).scalars().all()
@@ -216,10 +234,15 @@ def summarize_interaction(doctor_name: str, limit: Union[int, str] = 10) -> str:
 @tool
 def schedule_follow_up(doctor_name: str, date: str, description: str) -> str:
     """Schedule a follow-up task for a doctor."""
+    if not doctor_name or doctor_name.strip().lower() in ["", "unknown", "smith", "dr. smith", "dr smith"]:
+        return json.dumps({"success": False, "error": "Please ask the user which doctor they are referring to."})
+        
     db = SessionLocal()
     try:
-        # 1. Find the doctor
-        stmt = select(HCP).where(HCP.name.ilike(f"%{doctor_name}%"))
+        clean_name = doctor_name.replace("Dr.", "").replace("Dr ", "").strip()
+        search_term = clean_name.split()[0] if clean_name else doctor_name
+        
+        stmt = select(HCP).where(HCP.name.ilike(f"%{search_term}%"))
         hcp = db.execute(stmt).scalars().first()
         
         if not hcp:

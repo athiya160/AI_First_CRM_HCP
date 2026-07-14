@@ -11,8 +11,8 @@ const Layout = ({ children }) => {
 
   useEffect(() => {
     dispatch(fetchHcps());
-    dispatch(fetchInteractions(1));
-    dispatch(fetchFollowUps(1));
+    dispatch(fetchInteractions());
+    dispatch(fetchFollowUps());
   }, [dispatch]);
   return (
     <div className="app-container">

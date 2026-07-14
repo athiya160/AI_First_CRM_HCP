@@ -26,23 +26,24 @@
 /* Slide-out Panel */
 .copilot-panel {
   position: fixed;
-  top: 0;
-  right: -420px;
-  width: 400px;
-  height: 100vh;
+  top: 16px;
+  bottom: 16px;
+  right: -520px;
+  width: 480px;
   background: rgba(11, 15, 25, 0.95);
   backdrop-filter: blur(20px);
   border-left: 1px solid var(--border-color);
-  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 1001;
-  border-radius: 0;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
 }
 
 .copilot-panel.open {
-  right: 0;
+  right: 16px;
 }
 
 .copilot-header {

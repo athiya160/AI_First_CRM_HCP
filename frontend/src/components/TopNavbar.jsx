@@ -13,7 +13,7 @@ const TopNavbar = () => {
         <button className="icon-btn"><Bell size={20} /></button>
         <div className="user-profile">
           <div className="avatar"><User size={18} /></div>
-          <span>Jane Doe</span>
+          <span>Athiya</span>
         </div>
       </div>
     </header>

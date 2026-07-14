@@ -2,18 +2,41 @@ import json
 from fastapi import APIRouter
 from pydantic import BaseModel
 from app.services.ai.agent import graph
-from langchain_core.messages import HumanMessage, ToolMessage
+from typing import List, Dict, Optional
+from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 
 router = APIRouter()
 
 class ChatRequest(BaseModel):
     message: str
-    hcp_id: int = None
+    hcp_id: Optional[int] = None
+    history: Optional[List[Dict[str, str]]] = None
 
 @router.post("/")
 def chat_endpoint(request: ChatRequest):
-    # 1. Receive user message and convert to HumanMessage
+    # 1. Reconstruct conversation history
+    langchain_messages = []
+    if request.history:
+        for msg in request.history:
+            if msg.get("role") == "user":
+                langchain_messages.append(HumanMessage(content=msg.get("content", "")))
+            elif msg.get("role") == "ai":
+                langchain_messages.append(AIMessage(content=msg.get("content", "")))
+    
+    # 2. Add UI Context if HCP is selected
+    if request.hcp_id:
+        from app.db.database import SessionLocal
+        from app.models.hcp import HCP
+        db = SessionLocal()
+        hcp = db.query(HCP).filter(HCP.id == request.hcp_id).first()
+        if hcp:
+            ui_context_msg = HumanMessage(content=f"[SYSTEM CONTEXT: The user currently has {hcp.name} selected in their UI. Unless they specify a different name, assume they are talking about {hcp.name}.]")
+            langchain_messages.append(ui_context_msg)
+        db.close()
+    
+    # 3. Append new user message
     user_message = HumanMessage(content=request.message)
+    langchain_messages.append(user_message)
     
     # Defaults for structured fields
     summary = ""
@@ -24,9 +47,9 @@ def chat_endpoint(request: ChatRequest):
     doctor = None
     interaction_id = None
     
-    # 2 & 3. Call LangGraph & Execute tools automatically
+    # 3. Call LangGraph & Execute tools automatically
     try:
-        final_state = graph.invoke({"messages": [user_message]})
+        final_state = graph.invoke({"messages": langchain_messages})
         
         # Extract the final AI response (last message in the state)
         messages = final_state.get("messages", [])

@@ -133,6 +133,54 @@ const InteractionHistory = () => {
                       <StatusBadge status={log.type} />
                     </div>
                     <p className="notes">{log.notes}</p>
+                    
+                    {log.summary && (
+                      <div className="history-ai-insights" style={{ marginTop: '1rem', padding: '1rem', background: 'var(--bg-main)', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                          <Sparkles size={14} style={{ color: 'var(--primary)' }} />
+                          <h4 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-light)', textTransform: 'uppercase' }}>AI Analysis</h4>
+                        </div>
+                        <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.9rem', color: 'var(--text-dark)' }}>{log.summary}</p>
+                        
+                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                          {log.sentiment && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                              <span>{log.sentiment.toLowerCase() === 'positive' ? '😊' : log.sentiment.toLowerCase() === 'negative' ? '😞' : '😐'}</span>
+                              <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-dark)' }}>{log.sentiment}</span>
+                            </div>
+                          )}
+                          {log.confidence && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                              <span>🎯</span>
+                              <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-dark)' }}>{log.confidence}% Confident</span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {(log.entities?.length > 0 || log.action_items?.length > 0) && (
+                          <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-light)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            {log.entities?.length > 0 && (
+                              <div>
+                                <strong style={{ fontSize: '0.8rem', color: 'var(--text-light)', textTransform: 'uppercase' }}>Entities</strong>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginTop: '0.25rem' }}>
+                                  {log.entities.map((e, idx) => (
+                                    <span key={idx} style={{ background: 'var(--bg-card)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.75rem', border: '1px solid var(--border-light)' }}>{e}</span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            {log.action_items?.length > 0 && (
+                              <div>
+                                <strong style={{ fontSize: '0.8rem', color: 'var(--text-light)', textTransform: 'uppercase' }}>Action Items</strong>
+                                <ul style={{ margin: '0.25rem 0 0 0', paddingLeft: '1rem', fontSize: '0.8rem' }}>
+                                  {log.action_items.map((a, idx) => <li key={idx}>{a}</li>)}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </Card>
               </TimelineItem>
             </div>

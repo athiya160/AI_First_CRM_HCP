@@ -6,7 +6,8 @@ export const fetchInteractions = createAsyncThunk(
   'interactions/fetchInteractions',
   async (hcpId, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get(`/interactions/?hcp_id=${hcpId}`);
+      const url = hcpId ? `/interactions/?hcp_id=${hcpId}` : `/interactions/`;
+      const response = await apiClient.get(url);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -18,8 +19,8 @@ export const fetchFollowUps = createAsyncThunk(
   'interactions/fetchFollowUps',
   async (hcpId, { rejectWithValue }) => {
     try {
-      // Assuming backend has /follow-ups/?hcp_id=X or similar
-      const response = await apiClient.get(`/follow-ups/?hcp_id=${hcpId}`);
+      const url = hcpId ? `/follow-ups/?hcp_id=${hcpId}` : `/follow-ups/`;
+      const response = await apiClient.get(url);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);

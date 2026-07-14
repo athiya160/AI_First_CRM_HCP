@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
-from sqlalchemy import String, DateTime, ForeignKey, Text
+from sqlalchemy import String, DateTime, ForeignKey, Text, Integer, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from app.db.database import Base
@@ -15,6 +15,10 @@ class Interaction(Base):
     type: Mapped[str] = mapped_column(String(50))  # e.g., 'email', 'meeting', 'call'
     notes: Mapped[Optional[str]] = mapped_column(Text)
     summary: Mapped[Optional[str]] = mapped_column(Text)
+    sentiment: Mapped[Optional[str]] = mapped_column(String(50))
+    confidence: Mapped[Optional[int]] = mapped_column(Integer)
+    entities: Mapped[Optional[list]] = mapped_column(JSON)
+    action_items: Mapped[Optional[list]] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships

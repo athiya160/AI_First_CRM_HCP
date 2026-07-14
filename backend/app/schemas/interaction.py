@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 class InteractionBase(BaseModel):
@@ -7,6 +7,10 @@ class InteractionBase(BaseModel):
     type: str  # e.g., 'email', 'meeting', 'call'
     notes: Optional[str] = None
     summary: Optional[str] = None
+    sentiment: Optional[str] = None
+    confidence: Optional[int] = None
+    entities: Optional[List[str]] = None
+    action_items: Optional[List[str]] = None
 
 class InteractionCreate(InteractionBase):
     hcp_id: int

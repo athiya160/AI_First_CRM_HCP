@@ -3,9 +3,14 @@ import apiClient from '../api/axiosClient';
 
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
-  async ({ message, hcp_id }, { rejectWithValue }) => {
+  async ({ message, hcp_id }, { getState, rejectWithValue }) => {
     try {
-      const response = await apiClient.post('/chat/', { message, hcp_id });
+      const state = getState();
+      const history = state.chat.messages.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
+      const response = await apiClient.post('/chat/', { message, hcp_id, history });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -15,7 +20,11 @@ export const sendMessage = createAsyncThunk(
 
 const initialState = {
   messages: [
-    { id: 1, role: 'ai', content: 'Hello! I am your CRM Copilot. How can I assist you today?' }
+    { 
+      id: 1, 
+      role: 'ai', 
+      content: "👋 **Welcome to CRM Copilot**\n\nI can help you:\n\n✓ Log doctor interactions\n\n✓ Summarize meetings\n\n✓ Search previous conversations\n\n✓ Schedule follow-ups\n\n✓ Generate AI insights\n\n**Try asking:**\n\n\"Log today's meeting\"\n\n\"Summarize my previous meetings\"\n\n\"Schedule a follow-up next Friday\"" 
+    }
   ],
   isOpen: false,
   isLoading: false,
@@ -52,27 +61,10 @@ const chatSlice = createSlice({
       .addCase(sendMessage.fulfilled, (state, action) => {
         state.isLoading = false;
         
-        let richContent = null;
-        if (action.payload.summary || (action.payload.action_items && action.payload.action_items.length > 0)) {
-          richContent = {
-            status: "Interaction Logged",
-            doctor: action.payload.doctor,
-            interactionId: action.payload.interaction_id,
-            summary: {
-              topic: action.payload.summary,
-              sentiment: action.payload.sentiment,
-              confidence: action.payload.confidence
-            },
-            entities: action.payload.entities || [],
-            actionItems: action.payload.action_items || []
-          };
-        }
-
         state.messages.push({
           id: Date.now(),
           role: 'ai',
-          content: action.payload.reply,
-          richContent
+          content: action.payload.reply
         });
       })
       .addCase(sendMessage.rejected, (state, action) => {
