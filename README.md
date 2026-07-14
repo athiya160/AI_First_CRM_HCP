@@ -109,26 +109,26 @@ AI_First_CRM_HCP/
 ### 1. Interactive Dashboard
 Provides a high-level overview of key metrics, pending follow-ups, and AI-generated insights. The dashboard dynamically updates greetings based on your local time and features smart Copilot suggestions for immediate action.
 
-*(Save your Dashboard screenshot as `dashboard.png` in a `screenshots` folder and uncomment the line below)*
-<!-- ![Dashboard](./screenshots/dashboard.png) -->
+*(Please save your Dashboard screenshot as `dashboard.png` inside the `screenshots` folder to display it here)*
+![Dashboard](./screenshots/dashboard.png)
 
 ### 2. Log Interaction (Structured Form)
 A clean, intuitive form allowing field representatives to manually log meeting details, select a Healthcare Professional, and record notes.
 
-*(Save your Structured Form screenshot as `log_interaction.png` in a `screenshots` folder and uncomment the line below)*
-<!-- ![Log Interaction Form](./screenshots/log_interaction.png) -->
+*(Please save your Structured Form screenshot as `log_interaction.png` inside the `screenshots` folder to display it here)*
+![Log Interaction Form](./screenshots/log_interaction.png)
 
 ### 3. AI CRM Copilot (Chat Interface)
 An integrated LangGraph-powered chat assistant that slides out to help users log interactions, summarize past meetings, search history, and schedule follow-ups using natural language.
 
-*(Save your Copilot Chat screenshot as `copilot_chat.png` in a `screenshots` folder and uncomment the line below)*
-<!-- ![AI Copilot](./screenshots/copilot_chat.png) -->
+*(Please save your Copilot Chat screenshot as `copilot_chat.png` inside the `screenshots` folder to display it here)*
+![AI Copilot](./screenshots/copilot_chat.png)
 
 ### 4. Interaction History
 A comprehensive timeline view of all past engagements. Users can filter by doctor or meeting type and review AI-analyzed summaries for every logged interaction.
 
-*(Save your History screenshot as `history.png` in a `screenshots` folder and uncomment the line below)*
-<!-- ![Interaction History](./screenshots/history.png) -->
+*(Please save your History screenshot as `history.png` inside the `screenshots` folder to display it here)*
+![Interaction History](./screenshots/history.png)
 
 ---
 
