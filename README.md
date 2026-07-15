@@ -32,17 +32,11 @@ PostgreSQL Database
 
 ## Features
 
-### 1. Interactive Dashboard
-Provides a high-level overview of key metrics, pending follow-ups, and AI-generated insights. The dashboard dynamically updates greetings based on your local time and features smart Copilot suggestions for immediate action.
-
-### 2. Log Interaction (Structured Form)
-A clean, intuitive form allowing field representatives to manually log meeting details, select a Healthcare Professional, and record notes.
-
-### 3. AI CRM Copilot (Chat Interface)
-An integrated LangGraph-powered chat assistant that slides out to help users log interactions, summarize past meetings, search history, and schedule follow-ups using natural language.
-
-### 4. Interaction History
-A comprehensive timeline view of all past engagements. Users can filter by doctor or meeting type and review AI-analyzed summaries for every logged interaction.
+- Dashboard with live HCP statistics and dynamic KPI cards.
+- Rigorous search and specialty filtering.
+- Log Interaction Form for traditional structured data entry.
+- AI Copilot Chat for conversational data logging and retrieval.
+- Interaction History timeline with AI-analyzed summaries for every logged interaction.
 
 ---
 
