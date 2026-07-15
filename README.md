@@ -7,34 +7,25 @@ The application combines React, FastAPI, PostgreSQL, LangGraph, and Groq LLM to 
 
 ---
 
-## Architecture
-
-Our application is built on a modern, decoupled architecture:
-- **Frontend:** React + Redux (Vite)
-- **Backend:** FastAPI (Python)
-- **AI Agent:** LangGraph + Groq LLM
-- **Database:** PostgreSQL (SQLAlchemy ORM)
-
----
-
-## Workflow Diagram
+## System Architecture
 
 ```text
-React (Frontend)
-      ↓
-Axios (API Client)
-      ↓
-FastAPI (Backend)
-      ↓
+Frontend (React + Redux)
+      |
+      | Axios API Calls
+      ▼
+Backend (FastAPI)
+      |
 LangGraph Agent
-      ↓
-Groq LLM
-      ↓
-Tool Execution
-      ↓
+      |
+      ├── Log Interaction
+      ├── Edit Interaction
+      ├── Search Interaction
+      ├── Summarize Interaction
+      └── Schedule Follow-up
+      |
+      ▼
 PostgreSQL Database
-      ↓
-React (State Update)
 ```
 
 ---
