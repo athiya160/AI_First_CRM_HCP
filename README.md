@@ -30,6 +30,22 @@ PostgreSQL Database
 
 ---
 
+## Features
+
+### 1. Interactive Dashboard
+Provides a high-level overview of key metrics, pending follow-ups, and AI-generated insights. The dashboard dynamically updates greetings based on your local time and features smart Copilot suggestions for immediate action.
+
+### 2. Log Interaction (Structured Form)
+A clean, intuitive form allowing field representatives to manually log meeting details, select a Healthcare Professional, and record notes.
+
+### 3. AI CRM Copilot (Chat Interface)
+An integrated LangGraph-powered chat assistant that slides out to help users log interactions, summarize past meetings, search history, and schedule follow-ups using natural language.
+
+### 4. Interaction History
+A comprehensive timeline view of all past engagements. Users can filter by doctor or meeting type and review AI-analyzed summaries for every logged interaction.
+
+---
+
 ## LangGraph Flow
 
 The LangGraph agent acts as an autonomous administrative assistant. It is equipped with five distinct Python tools mapped directly to PostgreSQL database operations:
@@ -92,34 +108,6 @@ AI_First_CRM_HCP/
 
 **AI Copilot:**
 - `POST /api/chat/` - Invoke the LangGraph agent.
-
----
-
-## Features & Screenshots
-
-### 1. Interactive Dashboard
-Provides a high-level overview of key metrics, pending follow-ups, and AI-generated insights. The dashboard dynamically updates greetings based on your local time and features smart Copilot suggestions for immediate action.
-
-*(Please save your Dashboard screenshot as `dashboard.png` inside the `screenshots` folder to display it here)*
-![Dashboard](./screenshots/dashboard.png)
-
-### 2. Log Interaction (Structured Form)
-A clean, intuitive form allowing field representatives to manually log meeting details, select a Healthcare Professional, and record notes.
-
-*(Please save your Structured Form screenshot as `log_interaction.png` inside the `screenshots` folder to display it here)*
-![Log Interaction Form](./screenshots/log_interaction.png)
-
-### 3. AI CRM Copilot (Chat Interface)
-An integrated LangGraph-powered chat assistant that slides out to help users log interactions, summarize past meetings, search history, and schedule follow-ups using natural language.
-
-*(Please save your Copilot Chat screenshot as `copilot_chat.png` inside the `screenshots` folder to display it here)*
-![AI Copilot](./screenshots/copilot_chat.png)
-
-### 4. Interaction History
-A comprehensive timeline view of all past engagements. Users can filter by doctor or meeting type and review AI-analyzed summaries for every logged interaction.
-
-*(Please save your History screenshot as `history.png` inside the `screenshots` folder to display it here)*
-![Interaction History](./screenshots/history.png)
 
 ---
 
